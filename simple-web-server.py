@@ -25,6 +25,12 @@
 #   - http://stackoverflow.com/questions/5508509/how-do-i-check-if-a-string-is-valid-json-in-python
 #   - https://wiki.python.org/moin/HandlingExceptions
 #   - https://help.github.com/articles/adding-an-existing-project-to-github-using-the-command-line/
+#  
+#  Rev 1.0, 08 Aug 2016:
+#  - First revision
+#  
+#  Rev 2.0, 15 Aug 2016:
+#  - Added retrieving of path in GET and POST requests
 
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
@@ -38,7 +44,9 @@ class S(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self._set_headers()
-        self.wfile.write("<html><body><h1>hi!</h1></body></html>")
+        path = self.path
+        result = "<html><body><h1>Hooray it works!</h1><p>Path = {}</p></body></html>".format(path)
+        self.wfile.write(result)
 
     def do_HEAD(self):
         self._set_headers()
@@ -46,6 +54,7 @@ class S(BaseHTTPRequestHandler):
     def do_POST(self):
         # Display sent data to console
         
+        path = self.path
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
         
@@ -67,7 +76,7 @@ class S(BaseHTTPRequestHandler):
         self._set_headers()
         
         # Replace line feeds with <br> breaks for web HTML display
-        webData = "<html><body><h1>POST!</h1>"
+        webData = "<html><body><h1>POST!</h1><p>Path = {}</p>".format(path)
         s = s.replace("\n","<br>")
         webData += "<div>" + s + "</div>"
         webData += "</body></html>"
